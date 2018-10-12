@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+/**
+ * @author eraop
+ */
 public class Generator {
     /**
      * 标记是否结束程序
@@ -28,11 +31,12 @@ public class Generator {
 
     private static void generatorCode() {
         while (flag) {
-            String moduleName = scanner("模块名称 ------- 输入 exit 结束");
+            String moduleName = scanner("模块名称 ------- 输入exit结束");
             if ("exit".equals(moduleName.toLowerCase())) {
                 flag = false;
             } else {
                 generatorModule(moduleName);
+
             }
         }
     }
@@ -51,6 +55,7 @@ public class Generator {
                 generatorTables(moduleName, tableNames);
             }
         }
+
 
     }
 
@@ -75,7 +80,7 @@ public class Generator {
         gc.setOutputDir(projectPath + "/java");
         gc.setAuthor(author);
         gc.setOpen(true);
-        gc.setSwagger2(true);
+        gc.setSwagger2(false);
         // gc.setMapperName("%sDao");
         gc.setBaseResultMap(true);
         gc.setBaseColumnList(true);
@@ -103,18 +108,21 @@ public class Generator {
                 // to do nothing
             }
         };
+
         List<FileOutConfig> focList = new ArrayList<>();
         focList.add(new FileOutConfig("/templates/mapper.xml.ftl") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                // 自定义输入文件名称
+                // 自定义Mapper文件生成路径
                 return projectPath + "/resources/mapper/" + pc.getModuleName()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
-        mpg.setTemplate(new TemplateConfig().setXml(null));
+        TemplateConfig tc = new TemplateConfig();
+        tc.setXml(null);
+        mpg.setTemplate(tc);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
